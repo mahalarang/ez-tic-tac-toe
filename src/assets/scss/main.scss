@@ -1,0 +1,99 @@
+@use './mixins';
+$border-color: #aaa;
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	@include mixins.center;
+}
+
+.tic-tac-toe {
+	@include mixins.area(600px);
+
+	@media screen and (max-width: 1200px) {
+		@include mixins.area(450px);
+	}
+
+	@media screen and (max-width: 678px) {
+		@include mixins.area(100vw);
+	}
+
+	.ttt__wrapper {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+
+		.ttt__row {
+			display: flex;
+			flex: 1;
+			height: unset;
+			min-height: 0;
+
+			&:last-child .ttt__col {
+				&::before {
+					display: none;
+				}
+
+				&::after {
+					border-bottom-left-radius: 50%;
+					border-bottom-right-radius: 50%;
+				}
+			}
+
+			&:first-child .ttt__col {
+				&::after {
+					border-top-left-radius: 50%;
+					border-top-right-radius: 50%;
+				}
+			}
+		}
+
+		.ttt__col {
+			flex: 1;
+			width: 0;
+			min-width: 0;
+			position: relative;
+			&::before,
+			&::after {
+				content: '';
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				background-color: $border-color;
+			}
+
+			&::before {
+				width: 100%;
+				height: 3px;
+			}
+
+			&::after {
+				width: 3px;
+				top: 0;
+			}
+
+			&:first-child {
+				&::after {
+					display: none;
+				}
+
+				&::before {
+					border-top-left-radius: 50%;
+					border-bottom-left-radius: 50%;
+				}
+			}
+
+			&:last-child {
+				&::before {
+					border-top-right-radius: 50%;
+					border-bottom-right-radius: 50%;
+				}
+			}
+		}
+	}
+}
