@@ -1,15 +1,20 @@
 import createElement from 'Utils/createElement.util';
 
+export const Marker = {
+	O: 'o',
+	X: 'x',
+};
+
 class TicTacToe {
 	#dimention = '3x3';
 	#rootEl = null;
+	#currentTurn = Marker.X;
 
 	constructor(options = {}) {
 		this.#setupDimention(options.dimention);
-	}
-
-	#setupDimention(dimention) {
-		if (dimention) this.#dimention = dimention;
+		if (Object.values(Marker).includes(options.starter)) {
+			this.#currentTurn = options.starter;
+		}
 	}
 
 	breakDimention() {
@@ -18,6 +23,38 @@ class TicTacToe {
 		return {
 			x: +dimSplit[0],
 			y: +(dimSplit[1] || dimSplit[0]),
+		};
+	}
+
+	markArea(target, turn) {
+		target.dataset.marked = true;
+		target.appendChild(
+			createElement({
+				selector: 'span',
+				attributes: {
+					class: 'ttt__marker',
+					'data-marker': turn,
+				},
+			})
+		);
+
+		this.#currentTurn = this.#currentTurn === Marker.X ? Marker.O : Marker.X;
+	}
+
+	#setupDimention(dimention) {
+		if (dimention) this.#dimention = dimention;
+	}
+
+	#handleClickTile() {
+		const $this = this;
+
+		return function () {
+			const col = this;
+			const row = this.parentElement;
+
+			if (!col.dataset.marked) {
+				$this.markArea(col, $this.#currentTurn);
+			}
 		};
 	}
 
@@ -46,6 +83,9 @@ class TicTacToe {
 								attributes: {
 									class: 'ttt__col',
 									'data-col': j + 1,
+								},
+								events: {
+									click: this.#handleClickTile.call(this),
 								},
 							})
 						),

@@ -1,6 +1,7 @@
 export default (options) => {
 	const children = options.children || [];
 	const attributes = options.attributes || {};
+	const events = options.events || {};
 
 	const el = document.createElement(options.selector);
 
@@ -8,6 +9,10 @@ export default (options) => {
 		const attr = document.createAttribute(key);
 		attr.value = value;
 		el.setAttributeNode(attr);
+	}
+
+	for (const [name, callback] of Object.entries(events)) {
+		el.addEventListener(name, callback);
 	}
 
 	children.forEach((child) => {
